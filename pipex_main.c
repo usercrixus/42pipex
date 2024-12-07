@@ -6,18 +6,11 @@
 /*   By: achaisne <achaisne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:17:30 by achaisne          #+#    #+#             */
-/*   Updated: 2024/12/06 19:07:54 by achaisne         ###   ########.fr       */
+/*   Updated: 2024/12/07 22:06:09 by achaisne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "./libft/ft_printf/ft_printf.h"
-#include "./libft/ft_base/libft.h"
-#include "./libft/ft_str/ft_str.h"
-#include <unistd.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <sys/stat.h>
-#include <fcntl.h>
+#include "pipex.h"
 
 int command_executor(char **command)
 {
@@ -36,33 +29,52 @@ int	command_management(char **command)
 	if (pid == 0)
 	    command_executor(command);
 	else if (pid > 0)
-		waitpid(pid, NULL, 0);
+		wait(NULL);
 	return (1);
+}
+
+int	launch_all_command(int argc, char **argv)
+{
+	char	*command;
+	char	**command_array;
+	int		i;
+	int		fd_in;
+	int		std_in;
+	int		std_out;
+
+	std_in = dup(STDIN_FILENO);
+	std_out = dup(STDOUT_FILENO);
+	i = 0;
+	while (i < argc - 2)
+	{
+		if (i == argc - 4)
+		{
+			fd_in = open(argv[1], O_RDONLY);
+			dup2(fd_in ,STDIN_FILENO);
+
+		}
+
+		command = get_command(argc, argv, i);
+		command_array = ft_split(command, ' ');
+		command_management(command_array);
+		free(command_array);
+		i++;
+	}
 }
 
 int main(int argc, char **argv)
 {
-	char	*buffer;
-	char	*command1;
-	char	*command2;
-	int		fd_in;
 	int		fd_out;
 
-	// command :
-	buffer = ft_strtrim(argv[2], " ");
-	command1 = ft_strjoin("/bin/", buffer);
-	free(buffer);
 
-	buffer = ft_strtrim(argv[3], " ");
-	command2 = ft_strjoin("/bin/", buffer);
-	free(buffer);
+	if (argc < 5)
+		return (ft_printf("Usage error"), 1);
+	if (!verify_command(argc, argv))
+		return (1);
+	//launch_all_command(argc, argv);
 
-	fd_out = open(argv[4], O_CREAT | O_RDWR);
-	dup2(fd_out ,STDOUT_FILENO);
-	fd_in = open(argv[1], O_RDONLY);
-	dup2(fd_in ,STDIN_FILENO);
-	command_management(ft_split(command2, ' '));
-	command_management(ft_split(command1, ' '));
+	// fd_out = open(argv[4], O_CREAT | O_RDWR);
+	// dup2(fd_out ,STDOUT_FILENO);
 
 	return (0);
 }
