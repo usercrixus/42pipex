@@ -5,6 +5,8 @@
         "ft_printf.h": "c",
         "ft_str.h": "c",
         "stat.h": "c",
-        "pipex.h": "c"
+        "pipex.h": "c",
+        "fcntl.h": "c",
+        "libft.h": "c"
     }
 }

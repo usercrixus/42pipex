@@ -6,75 +6,65 @@
 /*   By: achaisne <achaisne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:17:30 by achaisne          #+#    #+#             */
-/*   Updated: 2024/12/07 22:06:09 by achaisne         ###   ########.fr       */
+/*   Updated: 2024/12/08 03:08:17 by achaisne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int command_executor(char **command)
+int	manage_child(int argc, char **argv, int limit, int pipefd[2])
 {
-    if (execve(command[0], command, 0) == -1)
-        return (1);
-    return (0);
-}
+	char	**command;
 
-int	command_management(char **command)
-{
-	int pid;
-
-	pid = fork();
-    if (pid == -1)
-		return (0);
-	if (pid == 0)
-	    command_executor(command);
-	else if (pid > 0)
-		wait(NULL);
+	launch_pipe_series(argc, argv, limit - 1);
+	command = get_command(argc, argv, limit);
+	if (limit == argc - 2)
+		command_executor(command);
+	else
+		pipe_command_executor(command, pipefd);
+	free(command);
 	return (1);
 }
 
-int	launch_all_command(int argc, char **argv)
+int	manage_parent(int pipefd[2], int pid)
 {
-	char	*command;
-	char	**command_array;
-	int		i;
-	int		fd_in;
-	int		std_in;
-	int		std_out;
-
-	std_in = dup(STDIN_FILENO);
-	std_out = dup(STDOUT_FILENO);
-	i = 0;
-	while (i < argc - 2)
-	{
-		if (i == argc - 4)
-		{
-			fd_in = open(argv[1], O_RDONLY);
-			dup2(fd_in ,STDIN_FILENO);
-
-		}
-
-		command = get_command(argc, argv, i);
-		command_array = ft_split(command, ' ');
-		command_management(command_array);
-		free(command_array);
-		i++;
-	}
+	dup2(pipefd[0], STDIN_FILENO);
+	close(pipefd[1]);
+	close(pipefd[0]);
+	waitpid(pid, 0, 0);
 }
 
-int main(int argc, char **argv)
+int	launch_pipe_series(int argc, char **argv, int limit)
+{
+	int		pid;
+	int		pipefd[2];
+
+	if (limit == 1)
+		return (0);
+	if (pipe(pipefd) == -1)
+		return (0);
+	pid = fork();
+	if (pid == -1)
+		return (0);
+	else if (pid == 0)
+		manage_child(argc, argv, limit, pipefd);
+	else if (pid > 0)
+		manage_parent(pipefd, pid);
+}
+
+int	main(int argc, char **argv)
 {
 	int		fd_out;
-
+	int		fd_in;
 
 	if (argc < 5)
 		return (ft_printf("Usage error"), 1);
-	if (!verify_command(argc, argv))
-		return (1);
-	//launch_all_command(argc, argv);
-
-	// fd_out = open(argv[4], O_CREAT | O_RDWR);
-	// dup2(fd_out ,STDOUT_FILENO);
-
+	// if (!verify_command(argc, argv))
+	// 	return (1);
+	fd_in = open(argv[1], O_RDONLY);
+	dup2(fd_in, STDIN_FILENO);
+	fd_out = open(argv[argc - 1], O_CREAT | O_RDWR);
+	dup2(fd_out, STDOUT_FILENO);
+	launch_pipe_series(argc, argv, argc - 2);
 	return (0);
 }

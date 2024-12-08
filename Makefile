@@ -1,6 +1,7 @@
 OBJS = \
 		pipex_main.o \
 		pipex_get_command.o \
+		pipex_pipe_command.o \
 
 all: submodule libft.a pipex
 
