@@ -14,6 +14,12 @@ submodule:
 libft.a:
 	make -C ./libft all
 
+test1:
+	./pipex input.txt cat wc wc ouput.txt
+
+test2:
+	./pipex input.txt cat wc ouput.txt
+
 clean:
 	rm -f $(OBJS)
 	make -C ./libft clean

@@ -6,7 +6,7 @@
 /*   By: achaisne <achaisne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/08 00:39:03 by achaisne          #+#    #+#             */
-/*   Updated: 2024/12/08 03:06:47 by achaisne         ###   ########.fr       */
+/*   Updated: 2024/12/08 04:03:29 by achaisne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,10 @@
 int	command_executor(char **command)
 {
 	if (execve(command[0], command, environ) == -1)
+	{
+		perror(command[0]);
 		return (0);
+	}
 	return (1);
 }
 
@@ -25,6 +28,9 @@ int	pipe_command_executor(char **command, int pipefd[2])
 	close(pipefd[0]);
 	close(pipefd[1]);
 	if (execve(command[0], command, environ) == -1)
+	{
+		perror(command[0]);
 		return(0);
+	}
 	return (1);
 }
