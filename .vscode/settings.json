@@ -7,6 +7,8 @@
         "stat.h": "c",
         "pipex.h": "c",
         "fcntl.h": "c",
-        "libft.h": "c"
+        "libft.h": "c",
+        "errno.h": "c",
+        "ft_get_next_line.h": "c"
     }
 }
