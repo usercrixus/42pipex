@@ -6,13 +6,13 @@
 /*   By: achaisne <achaisne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 20:33:22 by achaisne          #+#    #+#             */
-/*   Updated: 2024/12/12 17:06:37 by achaisne         ###   ########.fr       */
+/*   Updated: 2024/12/12 17:26:39 by achaisne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char	**get_path()
+char	**get_path(void)
 {
 	int		i;
 	char	*line;
@@ -36,8 +36,6 @@ char	**get_path()
 
 char	*verify_command(char *command)
 {
-	int		fd;
-	int		status;
 	char	*command_pathed;
 	char	*path;
 	char	**paths;
@@ -50,10 +48,15 @@ char	*verify_command(char *command)
 	while (paths[i])
 	{
 		path = ft_strjoin(paths[i], "/");
+		if (!path)
+			return (0);
 		command_pathed = ft_strjoin(path, command);
+		if (!command_pathed)
+			return (0);
 		free(path);
 		if (access(command_pathed, F_OK) == 0)
 			return (ft_free_split(paths), command_pathed);
+		free(command_pathed);
 		i++;
 	}
 	return (ft_free_split(paths), (char *)0);
