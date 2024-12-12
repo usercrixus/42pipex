@@ -6,7 +6,7 @@
 /*   By: achaisne <achaisne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:17:30 by achaisne          #+#    #+#             */
-/*   Updated: 2024/12/09 20:12:52 by achaisne         ###   ########.fr       */
+/*   Updated: 2024/12/10 19:57:26 by achaisne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,13 +78,10 @@ int	main(int argc, char **argv)
 		return (ft_printf("Usage error"), 1);
 	// if (!verify_command(argc, argv))
 	// 	return (1);
-	intput_status = set_input(&argv, &argc);
-	if (!intput_status)
+	if (!set_input(&argv, &argc))
 		return (1);
 	if (!set_ouput(argc, argv))
 		return (1);
 	launch_pipe_series(argc, argv, argc - 1);
-	if (intput_status == 2)
-		unlink(argv[1]);
 	return (0);
 }
