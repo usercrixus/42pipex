@@ -6,7 +6,7 @@
 /*   By: achaisne <achaisne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:17:30 by achaisne          #+#    #+#             */
-/*   Updated: 2024/12/10 19:57:26 by achaisne         ###   ########.fr       */
+/*   Updated: 2024/12/12 15:58:55 by achaisne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,5 +83,6 @@ int	main(int argc, char **argv)
 	if (!set_ouput(argc, argv))
 		return (1);
 	launch_pipe_series(argc, argv, argc - 1);
+
 	return (0);
 }

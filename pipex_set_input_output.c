@@ -6,7 +6,7 @@
 /*   By: achaisne <achaisne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 19:42:36 by achaisne          #+#    #+#             */
-/*   Updated: 2024/12/10 19:59:14 by achaisne         ###   ########.fr       */
+/*   Updated: 2024/12/12 15:59:33 by achaisne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ int	set_input(char ***argv, int *argc)
 	dup2(fd_in, STDIN_FILENO);
 	close(fd_in);
 	if (intput_status == 2)
-		unlink(*argv[1]);
+		unlink((*argv)[1]);
 	return (intput_status);
 }
 
