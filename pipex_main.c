@@ -6,7 +6,7 @@
 /*   By: achaisne <achaisne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:17:30 by achaisne          #+#    #+#             */
-/*   Updated: 2024/12/12 19:42:59 by achaisne         ###   ########.fr       */
+/*   Updated: 2024/12/12 20:45:14 by achaisne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,10 +43,9 @@ void	manage_child(int argc, char **argv, int limit, int pipefd[2])
 			exit(1);
 		}
 	}
-	exit(1);
 }
 
-int	manage_parent(int pipefd[2], int pid)
+int	manage_parent(int pipefd[2])
 {
 	int	status;
 
@@ -57,9 +56,6 @@ int	manage_parent(int pipefd[2], int pid)
 	if (status == -1)
 		return (0);
 	status = close(pipefd[0]);
-	if (status == -1)
-		return (0);
-	status = waitpid(pid, 0, 0);
 	if (status == -1)
 		return (0);
 	return (1);
@@ -80,18 +76,21 @@ int	launch_pipe_series(int argc, char **argv, int limit)
 		return (0);
 	else if (pid == 0)
 	{
-		if (!launch_pipe_series(argc, argv, --limit))
-			return (0);
+		status = launch_pipe_series(argc, argv, --limit);
 		manage_child(argc, argv, limit, pipefd);
+		exit(status);
 	}
 	else if (pid > 0)
 	{
-		if (!manage_parent(pipefd, pid))
-			return (perror("Error :"), 0);
-		waitpid(pid, &status, 0);
+		if (!manage_parent(pipefd))
+			return (0);
+		if (wait(&status) == -1)
+			return (0);
 		if (WIFEXITED(status)) {
 			if (WEXITSTATUS(status) != 0)
 				return (0);
+			else
+				return (1);
 		}
 	}
 	return (1);
