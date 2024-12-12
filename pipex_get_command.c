@@ -6,7 +6,7 @@
 /*   By: achaisne <achaisne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 20:33:22 by achaisne          #+#    #+#             */
-/*   Updated: 2024/12/12 17:26:39 by achaisne         ###   ########.fr       */
+/*   Updated: 2024/12/12 19:37:24 by achaisne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,12 +60,4 @@ char	*verify_command(char *command)
 		i++;
 	}
 	return (ft_free_split(paths), (char *)0);
-}
-
-char	**get_command(int argc, char **argv, int i)
-{
-	char	**command_array;
-
-	command_array = ft_split(argv[i], ' ');
-	return (command_array);
 }

@@ -6,7 +6,7 @@
 /*   By: achaisne <achaisne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:17:30 by achaisne          #+#    #+#             */
-/*   Updated: 2024/12/12 19:24:10 by achaisne         ###   ########.fr       */
+/*   Updated: 2024/12/12 19:42:59 by achaisne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void	manage_child(int argc, char **argv, int limit, int pipefd[2])
 			exit(1);
 		}
 	}
-	exit(0);
+	exit(1);
 }
 
 int	manage_parent(int pipefd[2], int pid)
@@ -89,7 +89,6 @@ int	launch_pipe_series(int argc, char **argv, int limit)
 		if (!manage_parent(pipefd, pid))
 			return (perror("Error :"), 0);
 		waitpid(pid, &status, 0);
-
 		if (WIFEXITED(status)) {
 			if (WEXITSTATUS(status) != 0)
 				return (0);
@@ -98,10 +97,8 @@ int	launch_pipe_series(int argc, char **argv, int limit)
 	return (1);
 }
 
-int	main(int argc, char **argv, char **env)
+int	main(int argc, char **argv)
 {
-	int	intput_status;
-
 	if (argc < 5)
 		return (ft_printf("Usage error"), 1);
 	if (!set_input(&argv, &argc))

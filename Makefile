@@ -7,7 +7,10 @@ OBJS = \
 all: submodule libft.a pipex
 
 pipex: $(OBJS)
-	cc $^ -Werror -Wextra -Wall -g3 libft/ft_base/libft.a libft/ft_printf/libftprintf.a libft/ft_gnl/libftgnl.a -o $@
+	cc $^ -g3 libft/ft_base/libft.a libft/ft_printf/libftprintf.a libft/ft_gnl/libftgnl.a -o $@
+
+%.o: %.c
+	cc -c $< -Wall -Wextra -Werror -g3 -o $@
 
 submodule:
 	git submodule update --init --recursive
