@@ -21,6 +21,9 @@ test1:
 test2:
 	./pipex input.txt cat wc ouput.txt
 
+test3:
+	./pipex here_doc EOF cat wc ouput.txt
+
 clean:
 	rm -f $(OBJS)
 	make -C ./libft clean

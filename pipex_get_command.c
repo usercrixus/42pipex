@@ -6,7 +6,7 @@
 /*   By: achaisne <achaisne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 20:33:22 by achaisne          #+#    #+#             */
-/*   Updated: 2024/12/12 16:45:57 by achaisne         ###   ########.fr       */
+/*   Updated: 2024/12/12 17:06:37 by achaisne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ char	*verify_command(char *command)
 	int		fd;
 	int		status;
 	char	*command_pathed;
+	char	*path;
 	char	**paths;
 	int		i;
 
@@ -48,20 +49,20 @@ char	*verify_command(char *command)
 	i = 0;
 	while (paths[i])
 	{
-		command_pathed = ft_strjoin(paths[i], command);
-		if (access(command_pathed, F_OK | X_OK))
+		path = ft_strjoin(paths[i], "/");
+		command_pathed = ft_strjoin(path, command);
+		free(path);
+		if (access(command_pathed, F_OK) == 0)
 			return (ft_free_split(paths), command_pathed);
+		i++;
 	}
-	return (ft_free_split(paths), 0);
+	return (ft_free_split(paths), (char *)0);
 }
 
 char	**get_command(int argc, char **argv, int i)
 {
-	char	*command;
 	char	**command_array;
 
-	command = ft_strjoin(PATH, argv[i]);
-	command_array = ft_split(command, ' ');
-	free(command);
+	command_array = ft_split(argv[i], ' ');
 	return (command_array);
 }

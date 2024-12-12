@@ -6,7 +6,7 @@
 /*   By: achaisne <achaisne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:17:30 by achaisne          #+#    #+#             */
-/*   Updated: 2024/12/12 16:47:06 by achaisne         ###   ########.fr       */
+/*   Updated: 2024/12/12 16:59:58 by achaisne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,6 @@ int	manage_child(int argc, char **argv, int limit, int pipefd[2])
 
 	command = get_command(argc, argv, limit);
 	command[0] = verify_command(command[0]);
-	printf(("%s", command[0]));
-	exit(1);
 	if (limit == argc - 2)
 	{
 		command_executor(command);
