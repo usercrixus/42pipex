@@ -6,7 +6,7 @@
 /*   By: achaisne <achaisne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:17:30 by achaisne          #+#    #+#             */
-/*   Updated: 2024/12/12 20:45:14 by achaisne         ###   ########.fr       */
+/*   Updated: 2024/12/13 03:34:05 by achaisne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,33 +15,24 @@
 void	manage_child(int argc, char **argv, int limit, int pipefd[2])
 {
 	char	**command;
+	char	*command_buffer;
 
 	command = ft_split(argv[limit], ' ');
-	command[0] = verify_command(command[0]);
-	if (!command[0])
+	command_buffer = command[0];
+	command[0] = pathed_command(command[0]);
+	if (command[0] != command_buffer)
+		free(command_buffer);
+	if (limit == argc - 2 && !command_executor(command))
 	{
-		ft_putstr_fd("Command ", 2);
-		ft_putstr_fd(argv[limit], 2);
-		ft_putstr_fd(": not found.\n", 2);
+		perror(command[0]);
+		ft_free_split(command);
 		exit(1);
 	}
-	else if (limit == argc - 2)
+	else if (!pipe_command_executor(command, pipefd))
 	{
-		if (!command_executor(command))
-		{
-			perror(command[0]);
-			free(command);
-			exit(1);
-		}
-	}
-	else
-	{
-		if (!pipe_command_executor(command, pipefd))
-		{
-			perror(command[0]);
-			free(command);
-			exit(1);
-		}
+		perror(command[0]);
+		ft_free_split(command);
+		exit(1);
 	}
 }
 
@@ -65,7 +56,7 @@ int	launch_pipe_series(int argc, char **argv, int limit)
 {
 	int		pid;
 	int		pipefd[2];
-	int		status;
+	int		stat_loc;
 
 	if (limit == 2)
 		return (1);
@@ -73,25 +64,19 @@ int	launch_pipe_series(int argc, char **argv, int limit)
 		return (0);
 	pid = fork();
 	if (pid == -1)
-		return (0);
+		return (close(pipefd[0]), close(pipefd[1]), 0);
 	else if (pid == 0)
 	{
-		status = launch_pipe_series(argc, argv, --limit);
+		launch_pipe_series(argc, argv, --limit);
 		manage_child(argc, argv, limit, pipefd);
-		exit(status);
+		exit(0);
 	}
 	else if (pid > 0)
 	{
 		if (!manage_parent(pipefd))
 			return (0);
-		if (wait(&status) == -1)
+		if (wait(&stat_loc) == -1)
 			return (0);
-		if (WIFEXITED(status)) {
-			if (WEXITSTATUS(status) != 0)
-				return (0);
-			else
-				return (1);
-		}
 	}
 	return (1);
 }
@@ -99,12 +84,11 @@ int	launch_pipe_series(int argc, char **argv, int limit)
 int	main(int argc, char **argv)
 {
 	if (argc < 5)
-		return (ft_printf("Usage error"), 1);
+		return (ft_putstr_fd("Usage error", 2), 1);
 	if (!set_input(&argv, &argc))
-		return (ft_printf("Input error"), 1);
+		return (ft_putstr_fd("Input error", 2), 1);
 	if (!set_ouput(argc, argv))
-		return (ft_printf("Output error"), 1);
-	if (!launch_pipe_series(argc, argv, argc - 1))
-		return (ft_printf("Process error"), 1);
+		return (ft_putstr_fd("Output error", 2), 1);
+	launch_pipe_series(argc, argv, argc - 1);
 	return (0);
 }

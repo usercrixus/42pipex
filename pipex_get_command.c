@@ -6,7 +6,7 @@
 /*   By: achaisne <achaisne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 20:33:22 by achaisne          #+#    #+#             */
-/*   Updated: 2024/12/12 19:37:24 by achaisne         ###   ########.fr       */
+/*   Updated: 2024/12/13 03:35:53 by achaisne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ char	**get_path(void)
 	return (paths);
 }
 
-char	*verify_command(char *command)
+char	*pathed_command(char *command)
 {
 	char	*command_pathed;
 	char	*path;
@@ -43,21 +43,21 @@ char	*verify_command(char *command)
 
 	paths = get_path();
 	if (!paths)
-		return (0);
+		return (command);
 	i = 0;
 	while (paths[i])
 	{
 		path = ft_strjoin(paths[i], "/");
 		if (!path)
-			return (0);
+			return (command);
 		command_pathed = ft_strjoin(path, command);
-		if (!command_pathed)
-			return (0);
 		free(path);
+		if (!command_pathed)
+			return (command);
 		if (access(command_pathed, F_OK) == 0)
 			return (ft_free_split(paths), command_pathed);
 		free(command_pathed);
 		i++;
 	}
-	return (ft_free_split(paths), (char *)0);
+	return (ft_free_split(paths), command);
 }
