@@ -6,7 +6,7 @@
 /*   By: achaisne <achaisne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 19:42:36 by achaisne          #+#    #+#             */
-/*   Updated: 2024/12/12 18:28:23 by achaisne         ###   ########.fr       */
+/*   Updated: 2024/12/13 04:47:29 by achaisne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,7 +88,7 @@ int	set_ouput(int argc, char **argv)
 {
 	int		fd_out;
 
-	fd_out = open(argv[argc - 1], O_CREAT | O_RDWR);
+	fd_out = open(argv[argc - 1], O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
 	if (fd_out == -1)
 	{
 		perror(argv[argc - 1]);
