@@ -1,3 +1,5 @@
+MAKEFLAGS += --no-print-directory
+
 OBJS = \
 		pipex_main.o \
 		pipex_get_command.o \
