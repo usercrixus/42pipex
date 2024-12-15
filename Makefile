@@ -3,7 +3,6 @@ MAKEFLAGS += --no-print-directory
 OBJS = \
 		pipex_main.o \
 		pipex_get_command.o \
-		pipex_pipe_command.o \
 		pipex_set_input_output.o \
 
 all: submodule libft.a pipex

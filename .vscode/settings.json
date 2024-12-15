@@ -11,6 +11,7 @@
         "errno.h": "c",
         "ft_get_next_line.h": "c",
         "type_traits": "c",
-        "new": "c"
+        "new": "c",
+        "types.h": "c"
     }
 }

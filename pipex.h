@@ -6,7 +6,7 @@
 /*   By: achaisne <achaisne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/07 20:32:58 by achaisne          #+#    #+#             */
-/*   Updated: 2024/12/13 03:51:39 by achaisne         ###   ########.fr       */
+/*   Updated: 2024/12/15 04:30:50 by achaisne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,8 @@
 # include <errno.h>
 
 extern char	**environ;
-int			command_executor(char **command);
-int			pipe_command_executor(char **command, int pipefd[2]);
 char		*pathed_command(char *command);
-int			set_ouput(int argc, char **argv);
+int			set_ouput(int argc, char **argv, int status_here_doc);
 int			set_input(char ***argv, int *argc);
 
 #endif

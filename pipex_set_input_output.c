@@ -6,7 +6,7 @@
 /*   By: achaisne <achaisne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 19:42:36 by achaisne          #+#    #+#             */
-/*   Updated: 2024/12/14 16:40:08 by achaisne         ###   ########.fr       */
+/*   Updated: 2024/12/15 04:36:07 by achaisne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,9 @@ int	set_here_doc(char *delimiter)
 	buff = ft_str_get_char_array(str, str->size - str->start);
 	if (!buff)
 		return (0);
-	tmp_file = open(delimiter, O_CREAT | O_RDWR, S_IRUSR | S_IWUSR);
+	tmp_file = open(delimiter, O_CREAT | O_WRONLY, S_IRUSR | S_IWUSR);
+	if (!tmp_file)
+		return (free(buff), ft_str_free(str), 0);
 	write(tmp_file, buff, str->size - str->start);
 	return (close(tmp_file), free(buff), ft_str_free(str), 1);
 }
@@ -77,25 +79,26 @@ int	set_input(char ***argv, int *argc)
 		if (fd_in == -1)
 			return (perror("Failed to open /dev/null"), 0);
 	}
-	dup2(fd_in, STDIN_FILENO);
-	close(fd_in);
-	if (status_here_doc == 2)
-		unlink((*argv)[1]);
-	return (status_here_doc);
+	if (dup2(fd_in, STDIN_FILENO) == -1)
+		return (close(fd_in), 0);
+	if (status_here_doc == 2 && unlink((*argv)[1]) == -1)
+		return (close(fd_in), 0);
+	return (close(fd_in), status_here_doc);
 }
 
-int	set_ouput(int argc, char **argv)
+int	set_ouput(int argc, char **argv, int status_here_doc)
 {
 	int		fd_out;
+	int		output_flag;
 
-	fd_out = open(argv[argc - 1],
-			O_CREAT | O_RDWR | O_TRUNC, S_IRUSR | S_IWUSR);
+	if (status_here_doc == 1)
+		output_flag = O_CREAT | O_WRONLY | O_TRUNC;
+	else if (status_here_doc == 2)
+		output_flag = O_CREAT | O_WRONLY | O_APPEND;
+	fd_out = open(argv[argc - 1], output_flag, S_IRUSR | S_IWUSR);
 	if (fd_out == -1)
-	{
-		perror(argv[argc - 1]);
-		return (0);
-	}
-	dup2(fd_out, STDOUT_FILENO);
-	close(fd_out);
-	return (1);
+		return (perror(argv[argc - 1]), 0);
+	if (dup2(fd_out, STDOUT_FILENO) == -1)
+		return (close(fd_out), 0);
+	return (close(fd_out), 1);
 }
