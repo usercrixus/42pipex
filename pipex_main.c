@@ -6,7 +6,7 @@
 /*   By: achaisne <achaisne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:17:30 by achaisne          #+#    #+#             */
-/*   Updated: 2024/12/15 05:00:35 by achaisne         ###   ########.fr       */
+/*   Updated: 2024/12/18 02:54:57 by achaisne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ int	launch_pipe_series(int argc, char **argv, int limit)
 {
 	int		pid;
 	int		pipefd[2];
-	int		stat_loc;
 
 	if (limit == 1)
 		return (1);
@@ -76,7 +75,7 @@ int	launch_pipe_series(int argc, char **argv, int limit)
 		exit(0);
 	}
 	else if (pid > 0)
-		if (!manage_parent(pipefd) || wait(&stat_loc) == -1)
+		if (!manage_parent(pipefd))
 			return (0);
 	return (1);
 }
@@ -93,5 +92,7 @@ int	main(int argc, char **argv)
 	if (!set_ouput(argc, argv, status_here_doc))
 		return (ft_putstr_fd("Output error", 2), 1);
 	launch_pipe_series(argc, argv, argc - 2);
+	while (argc-- > 2)
+		waitpid(-1, NULL, 0);
 	return (0);
 }
