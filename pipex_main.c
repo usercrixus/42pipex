@@ -6,7 +6,7 @@
 /*   By: achaisne <achaisne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/02 17:17:30 by achaisne          #+#    #+#             */
-/*   Updated: 2024/12/18 02:54:57 by achaisne         ###   ########.fr       */
+/*   Updated: 2024/12/18 16:57:25 by achaisne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,15 @@ int	execute_child(char **argv, int limit)
 	char	*command_buffer;
 
 	command = ft_split(argv[limit], ' ');
+	if (!command)
+		return (ft_putstr_fd("Split failed in execute_child\n", 2), 0);
 	command_buffer = command[0];
 	command[0] = pathed_command(command[0]);
+	if (!command[0])
+	{
+		ft_free_split(command);
+		return (ft_putstr_fd("Command is null in execute_child\n", 2), 0);
+	}
 	if (command[0] != command_buffer)
 		free(command_buffer);
 	if (execve(command[0], command, environ) == -1)

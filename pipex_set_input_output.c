@@ -6,7 +6,7 @@
 /*   By: achaisne <achaisne@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/12/09 19:42:36 by achaisne          #+#    #+#             */
-/*   Updated: 2024/12/15 04:36:07 by achaisne         ###   ########.fr       */
+/*   Updated: 2024/12/16 19:41:48 by achaisne         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,9 +91,8 @@ int	set_ouput(int argc, char **argv, int status_here_doc)
 	int		fd_out;
 	int		output_flag;
 
-	if (status_here_doc == 1)
-		output_flag = O_CREAT | O_WRONLY | O_TRUNC;
-	else if (status_here_doc == 2)
+	output_flag = O_CREAT | O_WRONLY | O_TRUNC;
+	if (status_here_doc == 2)
 		output_flag = O_CREAT | O_WRONLY | O_APPEND;
 	fd_out = open(argv[argc - 1], output_flag, S_IRUSR | S_IWUSR);
 	if (fd_out == -1)
